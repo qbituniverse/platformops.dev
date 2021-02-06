@@ -1,11 +1,9 @@
-## Introduction
+---
+title: platformops.dev
+description: All PlatformOps => scripts, templates, automation
+permalink: /
+---
 
-Content is coming... very, very soon...
+# Introduction
 
-## Background
-
-Content is coming... very, very soon...
-
-## Who should read this document?
-
-Content is coming... very, very soon...
+**platformops.dev** is a catalogue of many useful **PlatformOps** related scripts, templates, automation.
