@@ -1,14 +1,14 @@
 ---
-title: azure-samples/aks-dns-application-gateway
-description: azure-samples/aks-dns-application-gateway
-permalink: /azure-samples/aks-dns-application-gateway
+title: azure-cloud/aks-dns-application-gateway
+description: azure-cloud/aks-dns-application-gateway
+permalink: /azure-cloud/aks-dns-application-gateway
 ---
 
-# [./ azure-samples](/azure-samples)
+# [./ azure-cloud](/azure-cloud)
 
-# AKS DNS Application Gateway
+## AKS DNS Application Gateway
 
-## Custom Domain (DNS) Forwarding to Kubernetes (AKS) Cluster via Application Gateway in Azure
+### Custom Domain (DNS) Forwarding to Kubernetes (AKS) Cluster via Application Gateway in Azure
 
 In this tutorial we'll deploy Kubernetes AKS cluster in Azure, set up internal Azure networking, and Application Gateway to route traffic from the External (Internet) to Internal application (AKS Cluster).
 
@@ -38,7 +38,7 @@ You'll need these prerequisite items in order to run this tutorial.
 |[Domain Name](https://en.wikipedia.org/wiki/Domain_name)|Your own Domain Name - in this tutorial I'm using my own *dirtydozen.app*|
 |[SSL Certificate](https://en.wikipedia.org/wiki/Public_key_certificate)|Your own SSL Certificate to secure your Domain - in this tutorial I'm using SSL Cert to secure *aks-dns-ag.dirtydozen.app*|
 
-## Tutorial Contents
+### Tutorial Contents
 
 |Name|Description|
 |-----|-----|
@@ -55,7 +55,7 @@ Let's request *aks-dns-ag.dirtydozen.app* and the result should be the typical *
 
 ![Server not found](assets/no-access.PNG)
 
-## Expected Result
+### Expected Result
 
 At the end of this tutorial, your chosen DNS entry, in our case *aks-dns-ag.dirtydozen.app*, will return this.
 

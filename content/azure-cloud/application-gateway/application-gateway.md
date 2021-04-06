@@ -1,14 +1,18 @@
 ---
-title: azure-samples/application-gateway
-description: azure-samples/application-gateway
-permalink: /azure-samples/application-gateway
+title: azure-cloud/application-gateway
+description: azure-cloud/application-gateway
+permalink: /azure-cloud/application-gateway
 ---
 
-# [./ azure-samples](/azure-samples)
+# [./ azure-cloud](/azure-cloud)
 
-# Application Gateway
+## Application Gateway
 
-## Azure Application Gateway
+### Azure Application Gateway
+
+In this tutorial we'll deploy and delete Azure Application Gateway.
+
+### Tutorial Contents
 
 |Name|Details|
 |-----|-----|
@@ -25,7 +29,7 @@ The Azure Application Gateway depends on several Azure resources or resource ver
 |Public IP Address|IP Address needs to be assigned to the Application Gateway to allow access to your backed applications or services.|
 |Application Gateway Resource Group|This is simply a container for your Application Gateway resources, and it needs to be created prior to provisioning your Application Gateway.|
 |Networking|You need to have Vnet in place and a dedicated Subnet for your Application Gateway created on that Vnet.|
-|Backend IP Address|The Application Gateway neeeds to resolve calls to somehere in your backed infrastructure. We'll use IP address here but you can also use FQDN records.|
+|Backend IP Address|The Application Gateway needs to resolve calls to somewhere in your backed infrastructure. We'll use IP address here but you can also use FQDN records.|
 
 ### Public IP Address
 
