@@ -1,14 +1,18 @@
 ---
-title: azure-samples/aks-cluster
-description: azure-samples/aks-cluster
-permalink: /azure-samples/aks-cluster
+title: azure-cloud/aks-cluster
+description: azure-cloud/aks-cluster
+permalink: /azure-cloud/aks-cluster
 ---
 
-# [./ azure-samples](/azure-samples)
+# [./ azure-cloud](/azure-cloud)
 
-# AKS Cluster
+## AKS Cluster
 
-## Azure Kubernetes Service (AKS) Deployments
+### Azure Kubernetes Service (AKS)
+
+In this tutorial we'll deploy, modify and delete Kubernetes AKS cluster in Azure.
+
+### Tutorial Contents
 
 |Name|Details|
 |-----|-----|

@@ -1,14 +1,18 @@
 ---
-title: azure-samples/networking
-description: azure-samples/networking
-permalink: /azure-samples/networking
+title: azure-cloud/networking
+description: azure-cloud/networking
+permalink: /azure-cloud/networking
 ---
 
-# [./ azure-samples](/azure-samples)
+# [./ azure-cloud](/azure-cloud)
 
-# Networking
+## Networking
 
-## Azure Networking Deployments
+### Azure Networking
+
+In this tutorial we'll deploy and delete Azure Networking components.
+
+### Tutorial Contents
 
 |Name|Details|
 |-----|-----|
