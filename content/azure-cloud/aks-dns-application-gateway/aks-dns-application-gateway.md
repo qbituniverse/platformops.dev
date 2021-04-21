@@ -35,8 +35,8 @@ You'll need these prerequisite items in order to run this tutorial.
 |[Kubernetes CLI](https://chocolatey.org/packages/kubernetes-cli)|To interact with Kubernetes cluster from Powershell|
 |[Helm CLI](https://chocolatey.org/packages/kubernetes-helm)|To interact with Kubernetes Helm deployments from Powershell|
 |[OpenSSL](https://chocolatey.org/packages/openssl)|To convert our SSL Certificate to PFX|
-|[Domain Name](https://en.wikipedia.org/wiki/Domain_name)|Your own Domain Name - in this tutorial I'm using my own *dirtydozen.app*|
-|[SSL Certificate](https://en.wikipedia.org/wiki/Public_key_certificate)|Your own SSL Certificate to secure your Domain - in this tutorial I'm using SSL Cert to secure *aks-dns-ag.dirtydozen.app*|
+|[Domain Name](https://en.wikipedia.org/wiki/Domain_name)|Your own Domain Name - in this tutorial I'm using my own *platformops.dev*|
+|[SSL Certificate](https://en.wikipedia.org/wiki/Public_key_certificate)|Your own SSL Certificate to secure your Domain - in this tutorial I'm using SSL Cert to secure *aks-dns-ag.platformops.dev*|
 
 ### Tutorial Contents
 
@@ -47,19 +47,26 @@ You'll need these prerequisite items in order to run this tutorial.
 |[yaml/deploy.yaml](yaml/deploy.yaml)|Deployment [YAML Template](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) for Kubernetes Application|
 |[yaml/ingress-internal-values.yaml](yaml/ingress-internal-values.yaml)|Default Ingress Controller configuration|
 
+### Assumptions
+
+It is assumed that beyond this point of this tutorial:
+- You have *Azure Subscription* provisioned
+- You have relevant *Roles and Privileges* setup for your User or Service Account
+- You are *Logged-in* to your Subscription via *Azure CLI*
+
 ## Verify Pre-deployment DNS Access
 
-Just to make sure your chosen DNS entry, in our case *aks-dns-ag.dirtydozen.app*, forward rule is not working. 
+Just to make sure your chosen DNS entry, in our case *aks-dns-ag.platformops.dev*, forward rule is not working. 
 
-Let's request *aks-dns-ag.dirtydozen.app* and the result should be the typical *404 Server not found* error.
+Let's request *aks-dns-ag.platformops.dev* and the result should be the typical *404 Server not found* error.
 
 ![Server not found](assets/no-access.PNG)
 
 ### Expected Result
 
-At the end of this tutorial, your chosen DNS entry, in our case *aks-dns-ag.dirtydozen.app*, will return this.
+At the end of this tutorial, your chosen DNS entry, in our case *aks-dns-ag.platformops.dev*, will return this.
 
-![DNS Forward Access to AKS in Azure](assets/dns-ssl-access-firefox.PNG)
+![DNS Forward Access to AKS in Azure](assets/dns-ssl-access.PNG)
 
 ## Setup Variables
 
@@ -146,334 +153,9 @@ az role assignment create `
 
 ### Deploy ARM Template
 
-We'll use [ARM Template](https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/overview) file [arm/aks-dns-ag-create.json](arm/aks-dns-ag-create.json) to define all the resources we need for our sample AKS app.
+We'll use this ARM Template [arm/aks-dns-ag-create.json](arm/aks-dns-ag-create.json) to define all the resources we need for our sample AKS app.
 
-```json
-{
-    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {
-        "location": {
-            "type": "string",
-            "metadata": {
-                "description": "The location for all the resources."
-            }
-        },
-        "ipAddressName": {
-            "type": "String",
-            "metadata": {
-                "description": "The name of the IP Address."
-            }
-        },
-        "vnetName": {
-            "type": "string",
-            "metadata": {
-                "description": "The name of the Vnet."
-            }
-        },
-        "vnetAddressPrefix": {
-            "type": "string",
-            "metadata": {
-                "description": "Address Space for Vnet."
-            }
-        },
-        "subnetAgName": {
-            "type": "string",
-            "metadata": {
-                "description": "The name of the Application Gateway Subnet."
-            }
-        },
-        "subnetAgAddressPrefix": {
-            "type": "string",
-            "metadata": {
-                "description": "Address Space for the Application Gateway Subnet."
-            }
-        },
-        "subnetAksName": {
-            "type": "string",
-            "metadata": {
-                "description": "The name of the AKS Subnet."
-            }
-        },
-        "subnetAksAddressPrefix": {
-            "type": "string",
-            "metadata": {
-                "description": "Address Space for the AKS Subnet."
-            }
-        },
-        "subnetAksBackendIpAddress": {
-            "type": "string",
-            "metadata": {
-                "description": "IP Address for AKS backend resource access."
-            }
-        },
-        "applicationGatewayName": {
-            "type": "String",
-            "metadata": {
-                "description": "The name of the Application Gateway."
-            }
-        },
-        "aksName": {
-            "type": "string",
-            "metadata": {
-                "description": "The name of the AKS Cluster."
-            }
-        },
-        "agentVMSize": {
-            "type": "string",
-            "metadata": {
-                "description": "The size of the Virtual Machine."
-            }
-        },
-        "agentCount": {
-            "type": "int",
-            "metadata": {
-                "description": "The number of agent nodes for the cluster."
-            }
-        },
-        "kubernetesVersion": {
-            "type": "string",
-            "metadata": {
-                "description": "The version of Kubernetes."
-            }
-        },
-        "maxPods": {
-            "type": "int",
-            "metadata": {
-                "description": "Maximum number of pods that can run on a node."
-            }
-        },
-        "servicePrincipalClientId": {
-            "type": "securestring",
-            "metadata": {
-                "description": "The Service Principal Client ID."
-            }
-        },
-        "servicePrincipalClientSecret": {
-            "type": "securestring",
-            "metadata": {
-                "description": "The Service Principal Client Secret."
-            }
-        }
-    },
-    "resources": [
-        {
-            "type": "Microsoft.Network/publicIPAddresses",
-            "apiVersion": "2020-05-01",
-            "name": "[parameters('ipAddressName')]",
-            "location": "[parameters('location')]",
-            "sku": {
-                "name": "Standard"
-            },
-            "properties": {
-                "publicIPAddressVersion": "IPv4",
-                "publicIPAllocationMethod": "Static"
-            }
-        },
-        {
-            "type": "Microsoft.Network/virtualNetworks",
-            "apiVersion": "2020-05-01",
-            "name": "[parameters('vnetName')]",
-            "location": "[parameters('location')]",
-            "properties": {
-                "addressSpace": {
-                    "addressPrefixes": [
-                        "[parameters('vnetAddressPrefix')]"
-                    ]
-                },
-                "subnets": [
-                    {
-                        "name": "[parameters('subnetAgName')]",
-                        "properties": {
-                            "addressPrefix": "[parameters('subnetAgAddressPrefix')]"
-                        }
-                    },
-                    {
-                        "name": "[parameters('subnetAksName')]",
-                        "properties": {
-                            "addressPrefix": "[parameters('subnetAksAddressPrefix')]"
-                        }
-                    }
-                ]
-            },
-            "resources": [
-                {
-                    "type": "subnets",
-                    "apiVersion": "2020-05-01",
-                    "location": "[parameters('location')]",
-                    "name": "[parameters('subnetAgName')]",
-                    "dependsOn": [
-                        "[parameters('vnetName')]"
-                    ],
-                    "properties": {
-                        "addressPrefix": "[parameters('subnetAgAddressPrefix')]"
-                    }
-                },
-                {
-                    "type": "subnets",
-                    "apiVersion": "2020-05-01",
-                    "location": "[parameters('location')]",
-                    "name": "[parameters('subnetAksName')]",
-                    "dependsOn": [
-                        "[parameters('vnetName')]",
-                        "[parameters('subnetAgName')]"
-                    ],
-                    "properties": {
-                        "addressPrefix": "[parameters('subnetAksAddressPrefix')]"
-                    }
-                }
-            ]
-        },
-        {
-            "type": "Microsoft.Network/applicationGateways",
-            "apiVersion": "2020-05-01",
-            "name": "[parameters('applicationGatewayName')]",
-            "location": "[parameters('location')]",
-            "dependsOn": [
-                "[resourceId('Microsoft.Network/publicIPAddresses', parameters('ipAddressName'))]",
-                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'), parameters('subnetAgName'))]"
-            ],
-            "properties": {
-                "sku": {
-                    "name": "Standard_v2",
-                    "tier": "Standard_v2",
-                    "capacity": 1
-                },
-                "gatewayIPConfigurations": [
-                    {
-                        "name": "appGatewayIpConfig",
-                        "properties": {
-                            "subnet": {
-                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'), parameters('subnetAgName'))]"
-                            }
-                        }
-                    }
-                ],
-                "frontendIPConfigurations": [
-                    {
-                        "name": "appGwPublicFrontendIp",
-                        "properties": {
-                            "privateIPAllocationMethod": "Dynamic",
-                            "publicIPAddress": {
-                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('ipAddressName'))]"
-                            }
-                        }
-                    }
-                ],
-                "frontendPorts": [
-                    {
-                        "name": "port_80",
-                        "properties": {
-                            "port": 80
-                        }
-                    }
-                ],
-                "backendAddressPools": [
-                    {
-                        "name": "aks-backend",
-                        "properties": {
-                            "backendAddresses": [
-                                {
-                                    "ipAddress": "[parameters('subnetAksBackendIpAddress')]"
-                                }
-                            ]
-                        }
-                    }
-                ],
-                "backendHttpSettingsCollection": [
-                    {
-                        "name": "aks-http",
-                        "properties": {
-                            "port": 80,
-                            "protocol": "Http",
-                            "cookieBasedAffinity": "Disabled",
-                            "pickHostNameFromBackendAddress": false,
-                            "requestTimeout": 20
-                        }
-                    }
-                ],
-                "httpListeners": [
-                    {
-                        "name": "aks-listener",
-                        "properties": {
-                            "frontendIPConfiguration": {
-                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('applicationGatewayName')), '/frontendIPConfigurations/appGwPublicFrontendIp')]"
-                            },
-                            "frontendPort": {
-                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('applicationGatewayName')), '/frontendPorts/port_80')]"
-                            },
-                            "protocol": "Http",
-                            "requireServerNameIndication": false
-                        }
-                    }
-                ],
-                "requestRoutingRules": [
-                    {
-                        "name": "aks-routing",
-                        "properties": {
-                            "ruleType": "Basic",
-                            "httpListener": {
-                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('applicationGatewayName')), '/httpListeners/aks-listener')]"
-                            },
-                            "backendAddressPool": {
-                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('applicationGatewayName')), '/backendAddressPools/aks-backend')]"
-                            },
-                            "backendHttpSettings": {
-                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('applicationGatewayName')), '/backendHttpSettingsCollection/aks-http')]"
-                            }
-                        }
-                    }
-                ],
-                "enableHttp2": false
-            }
-        },
-        {
-            "type": "Microsoft.ContainerService/managedClusters",
-            "apiVersion": "2020-11-01",
-            "name": "[parameters('aksName')]",
-            "location": "[parameters('location')]",
-            "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'), parameters('subnetAksName'))]"
-            ],
-            "properties": {
-                "kubernetesVersion": "[parameters('kubernetesVersion')]",
-                "dnsPrefix": "[parameters('aksName')]",
-                "enableRBAC": false,
-                "addonProfiles": {
-                    "httpApplicationRouting": {
-                        "enabled": false
-                    }
-                },
-                "agentPoolProfiles": [
-                    {
-                        "name": "agentpool",
-                        "count": "[parameters('agentCount')]",
-                        "vmSize": "[parameters('agentVMSize')]",
-                        "osDiskSizeGB": 100,
-                        "osDiskType": "Managed",
-                        "vnetSubnetID": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'), parameters('subnetAksName'))]",
-                        "maxPods": "[parameters('maxPods')]",
-                        "type": "AvailabilitySet",
-                        "orchestratorVersion": "[parameters('kubernetesVersion')]",
-                        "mode": "User",
-                        "osType": "Linux"
-                    }
-                ],
-                "servicePrincipalProfile": {
-                    "clientId": "[parameters('servicePrincipalClientId')]",
-                    "secret": "[parameters('servicePrincipalClientSecret')]"
-                },
-                "networkProfile": {
-                    "networkPlugin": "kubenet",
-                    "loadBalancerSku": "Basic"
-                }
-            }
-        }
-    ]
-}
-```
-
-We'll then pass our variables to the template in order to run the deployment as one batch operation against Azure.
+Next, we'll pass our variables to the template in order to run the deployment as one batch operation on Azure.
 
 ```powershell
 az group deployment create `
@@ -528,86 +210,9 @@ kubectl config current-context
 
 ### Deploy Sample AKS Application
 
-We'll use [YAML Template](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) file [yaml/deploy.yaml](yaml/deploy.yaml) to setup Namespaces, Deployment, Service, Pod & Ingress Rules.
+We'll use this YAML Template [yaml/deploy.yaml](yaml/deploy.yaml) to setup Namespaces, Deployment, Service, Pod & Ingress Rules.
 
-```yaml
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: aks-dns-ag
-
----
-
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: aks-dns-ag-webapp
-  namespace: aks-dns-ag
-  labels:
-    app: aks-dns-ag-webapp
-spec:
-  replicas: 1
-  revisionHistoryLimit: 3
-  minReadySeconds: 10
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxUnavailable: 25%
-      maxSurge: 25%
-  selector:
-    matchLabels:
-      app: aks-dns-ag-webapp
-  template:
-    metadata:
-      labels:
-        app: aks-dns-ag-webapp
-    spec:
-      containers:
-      - name: aks-dns-ag-webapp
-        image: mcr.microsoft.com/azuredocs/aks-helloworld:v1
-        ports:
-        - containerPort: 80
-
----
-
-apiVersion: v1
-kind: Service
-metadata:
-  name: aks-dns-ag-webapp
-  namespace: aks-dns-ag
-spec:
-  selector:
-    app: aks-dns-ag-webapp
-  ports:
-  - protocol: TCP
-    port: 80
-    targetPort: 80
-  type: ClusterIP
-
----
-
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: aks-dns-ag-webapp
-  namespace: aks-dns-ag
-  annotations:
-    kubernetes.io/ingress.class: nginx
-    nginx.ingress.kubernetes.io/rewrite-target: /
-spec:
-  rules:
-  - http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: aks-dns-ag-webapp
-            port:
-              number: 80
-```
-
-And run the App deployment into our AKS cluster.
+Let's run the App deployment into our AKS cluster.
 
 ```powershell
 kubectl apply -f yaml/deploy.yaml
@@ -615,20 +220,9 @@ kubectl apply -f yaml/deploy.yaml
 
 ### Deploy Ingress Controller
 
-We'll use another [YAML Template](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) file [yaml/ingress-internal-values.yaml](yaml/ingress-internal-values.yaml) to provide default Ingress Controller values.
+We'll use this YAML Template [yaml/ingress-internal-values.yaml](yaml/ingress-internal-values.yaml) to provide default Ingress Controller values.
 
-```yaml
-controller:
-  replicaCount: 1
-  admissionWebhooks:
-      enabled: false
-  service:
-    externalTrafficPolicy: "Local"
-    annotations:
-      service.beta.kubernetes.io/azure-load-balancer-internal: "true"
-```
-
-And run the Ingress [Helm Chart](https://helm.sh/) deployment into our AKS cluster.
+Let's now run the Ingress [Helm Chart](https://helm.sh/) deployment into our AKS cluster.
 
 ```powershell
 helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
@@ -650,7 +244,7 @@ kubectl get all -n aks-dns-ag
 
 ## Acquire SSL Certificate
 
-We'll now secure access to our sample AKS application with SSL. For that, you'll need to provision PFX certificate from your SSL Certificate Issuer. For the purposes of this tutorial, we'll acquire SSL Certificate to secure the following Subdomain *aks-dns-ag* on our Domain *dirtydozen.app*.
+We'll now secure access to our sample AKS application with SSL. For that, you'll need to provision PFX certificate from your SSL Certificate Issuer. For the purposes of this tutorial, we'll acquire SSL Certificate to secure the following Subdomain *aks-dns-ag* on our Domain *platformops.dev*.
 
 This process can sometimes cause one or two headaches, so I'll guide you here through some gotchas below.
 
@@ -735,19 +329,13 @@ If you use your own [Azure DNS](https://azure.microsoft.com/en-gb/services/dns/)
 
 ## Test our Application
 
-Simply request your chosen Domain, in our case that is *aks-dns-ag.dirtydozen.app*, and verify that it now resolves to our sample AKS application running in Kubernetes AKS in Azure.
+Simply request your chosen Domain, in our case that is *aks-dns-ag.platformops.dev*, and verify that it now resolves to our sample AKS application running in Kubernetes AKS in Azure.
 
 > If we didn't have SSL Certificate configured as per steps above our sample AKS website would not respond because the latest browsers enforce HSTS.
 
 > Notice *SSL Certificate Padlock* now securing our app according to the [HTTP Strict Transport Security (HSTS)](https://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security) standards.
 
-### Chrome Test
-
-![DNS Forward Access to AKS in Azure - Chrome](assets/dns-ssl-access-chrome.PNG)
-
-### Firefox Test
-
-![DNS Forward Access to AKS in Azure - Firefox](assets/dns-ssl-access-firefox.PNG)
+![DNS Forward Access to AKS in Azure](assets/dns-ssl-access.PNG)
 
 ## Clean-up
 
