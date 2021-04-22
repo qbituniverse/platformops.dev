@@ -233,7 +233,7 @@ Simply run these commands below and within 5-10 minutes your Kubernetes and GCP 
 
 ### Delete GKE Deployments
 
-This will delete all the resources deployed into GKE as well as the underlying GCP infrastructure these provisioned in GCP as result of this, such as Load Balancers, Routing Rules and SSL Certficate.
+This will delete all the resources deployed into GKE as well as the underlying GCP infrastructure these provisioned in GCP as result of this, such as Load Balancers, Routing Rules and SSL Certificate.
 
 ```powershell
 kubectl delete namespace gke-dns-lb
