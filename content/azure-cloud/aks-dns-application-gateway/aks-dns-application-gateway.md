@@ -58,7 +58,7 @@ It is assumed that beyond this point of this tutorial:
 
 Just to make sure your chosen DNS entry, in our case *aks-dns-ag.platformops.dev*, forward rule is not working. 
 
-Let's request *aks-dns-ag.platformops.dev* and the result should be the typical *404 Server not found* error.
+Let's request *aks-dns-ag.platformops.dev* and the result should be the typical *This site can't be reached* error.
 
 ![Server not found](assets/no-access.PNG)
 
@@ -331,9 +331,9 @@ If you use your own [Azure DNS](https://azure.microsoft.com/en-gb/services/dns/)
 
 Simply request your chosen Domain, in our case that is *aks-dns-ag.platformops.dev*, and verify that it now resolves to our sample AKS application running in Kubernetes AKS in Azure.
 
-> If we didn't have SSL Certificate configured as per steps above our sample AKS website would not respond because the latest browsers enforce HSTS.
+> If we didn't have SSL Certificate configured as per steps above our sample AKS website would not respond because the latest browsers enforce [HTTP Strict Transport Security (HSTS)](https://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security).
 
-> Notice *SSL Certificate Padlock* now securing our app according to the [HTTP Strict Transport Security (HSTS)](https://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security) standards.
+> Notice *SSL Certificate Padlock* now securing our app according to the HSTS standards.
 
 ![DNS Forward Access to AKS in Azure](assets/dns-ssl-access.PNG)
 
