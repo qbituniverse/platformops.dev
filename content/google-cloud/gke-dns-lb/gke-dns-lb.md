@@ -34,7 +34,6 @@ You'll need these prerequisite items in order to run this tutorial.
 |[Microsoft Powershell](https://docs.microsoft.com/en-us/powershell/scripting/overview)|We'll run all the commands in this tutorial using Powershell|
 |[GCP SDK CLI](https://cloud.google.com/sdk)|To interact with GCP resources from Powershell|
 |[Kubernetes CLI](https://chocolatey.org/packages/kubernetes-cli)|To interact with Kubernetes cluster from Powershell|
-|[Helm CLI](https://chocolatey.org/packages/kubernetes-helm)|To interact with Kubernetes Helm deployments from Powershell|
 |[Domain Name](https://en.wikipedia.org/wiki/Domain_name)|Your own Domain Name - in this tutorial I'm using my own *platformops.dev*|
 
 ### Tutorial Contents
