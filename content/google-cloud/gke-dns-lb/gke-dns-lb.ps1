@@ -35,7 +35,6 @@ gcloud container clusters create $gkeName `
 --disk-type $diskType `
 --disk-size $diskSize `
 --metadata disable-legacy-endpoints=true `
---preemptible `
 --num-nodes $nodesCount `
 --no-enable-stackdriver-kubernetes `
 --enable-ip-alias `
