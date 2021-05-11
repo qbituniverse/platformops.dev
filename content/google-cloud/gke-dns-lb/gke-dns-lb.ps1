@@ -88,7 +88,7 @@ kubectl get managedcertificate -n gke-dns-lb
 # Delete GKE Deployments
 kubectl delete namespace gke-dns-lb
 
-# Delere GCP Resources
+# Delete GCP Resources
 gcloud container clusters delete $gkeName `
 --project $projectName `
 --zone $zone `
