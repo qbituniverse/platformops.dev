@@ -5,10 +5,10 @@
 $accountName = "<AWS ACCOUNT NAME>"
 
 # Remaining Variables
-$eksName = "qu-eks-1"
+$eksName = "eks-dns-lb-c1"
 $region = "eu-west-2"
 $kubernetesVersion = "1.19"
-$nodeType = "t3.small"
+$nodeType = "t3.medium"
 $nodeCount = "1"
 $volumeSize = "32"
 $maxPods = "110"
@@ -37,6 +37,9 @@ Write-Host "DNS Value =>" `
 (aws acm describe-certificate --certificate-arn $acmArn `
 --query 'Certificate.DomainValidationOptions[0].ResourceRecord.Value' `
 --output text)
+
+# Configure DNS
+# CNAME Record => DNS Name => DNS Value
 
 #############################################################################
 # Provision EKS Cluster
@@ -73,10 +76,13 @@ kubectl get all -n eks-dns-lb
 #############################################################################
 # Configure DNS
 #############################################################################
-# Acquire Public DNA Name
+# Acquire Public DNS Name
 Write-Host "Public DNS Value =>" `
 (aws elb describe-load-balancers --query 'LoadBalancerDescriptions[*].DNSName' `
 --output text)
+
+# Configure DNS
+# CNAME Record => eks-dns-lb => Public DNS Value
 
 #############################################################################
 # Clean-up

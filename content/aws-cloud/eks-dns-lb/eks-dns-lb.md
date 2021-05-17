@@ -82,10 +82,10 @@ $accountName = "<AWS ACCOUNT NAME>"
 These can be left unchanged with defaults as below or rename these to suit your naming conventions, network requirements or cluster specifics.
 
 ```powershell
-$eksName = "qu-eks-1"
+$eksName = "eks-dns-lb-c1"
 $region = "eu-west-2"
 $kubernetesVersion = "1.19"
-$nodeType = "t3.small"
+$nodeType = "t3.medium"
 $nodeCount = "1"
 $volumeSize = "32"
 $maxPods = "110"
@@ -140,8 +140,6 @@ If you have your NS ([Nameserver](https://en.wikipedia.org/wiki/Name_server)) Re
 Next, we'll provision EKS Resource in AWS.
 
 ### Deploy EKS
-
-Let's pass our variables to the EKSCTL CLI in order to run the deployment as one batch operation on AWS.
 
 ```powershell
 eksctl create cluster `
