@@ -81,14 +81,14 @@ $projectName = "<GCP PROJECT NAME>"
 These can be left unchanged with defaults as below or rename these to suit your naming conventions, network requirements or cluster specifics.
 
 ```powershell
-$gkeName = "qu-cluster-1"
+$gkeName = "gke-dns-lb-c1"
 $region = "europe-west2"
 $zone = "europe-west2-a"
 $kubernetesVersion = "1.19.8-gke.1600"
 $kubernetesReleaseChannel = "None"
 $nodesCount = "1"
 $maxPods = "110"
-$machineType = "custom-1-1024"
+$machineType = "custom-2-4096"
 $machineImage = "COS"
 $diskType = "pd-standard"
 $diskSize = "32"
@@ -100,8 +100,6 @@ $ipAddressName = "gke-dns-lb-ip"
 We'll first provision all we need in GCP from the infrastructure point of view.
 
 ### Deploy GKE
-
-Let's pass our variables to the GCP CLI in order to run the deployment as one batch operation on GCP.
 
 ```powershell
 gcloud container clusters create $gkeName `

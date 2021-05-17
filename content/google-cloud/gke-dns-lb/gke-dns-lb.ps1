@@ -5,14 +5,14 @@
 $projectName = "<GCP PROJECT NAME>"
 
 # Remaining Variables
-$gkeName = "qu-cluster-1"
+$gkeName = "gke-dns-lb-c1"
 $region = "europe-west2"
 $zone = "europe-west2-a"
 $kubernetesVersion = "1.19.8-gke.1600"
 $kubernetesReleaseChannel = "None"
 $nodesCount = "1"
 $maxPods = "110"
-$machineType = "custom-1-1024"
+$machineType = "custom-2-4096"
 $machineImage = "COS"
 $diskType = "pd-standard"
 $diskSize = "32"
@@ -61,6 +61,9 @@ Write-Host "Your IP Address =>" `
 --project $projectName `
 --global `
 --format="value(address)")
+
+# Configure DNS
+# A Record => gke-dns-lb => Your IP Address
 
 #############################################################################
 # Deploy Applications in GKE
